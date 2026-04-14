@@ -4,6 +4,52 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
+// Task 10-13 helpers: Promise-based accessors for books data
+const getAllBooksAsync = () => {
+  return new Promise((resolve, reject) => {
+    if (books) {
+      resolve(books);
+    } else {
+      reject({ message: "Unable to fetch books" });
+    }
+  });
+};
+
+const getBookByIsbnAsync = (isbn) => {
+  return new Promise((resolve, reject) => {
+    const book = books[isbn];
+    if (book) {
+      resolve(book);
+    } else {
+      reject({ message: "Book not found" });
+    }
+  });
+};
+
+const getBooksByAuthorAsync = (author) => {
+  return new Promise((resolve) => {
+    const booksByAuthor = {};
+    Object.keys(books).forEach((isbn) => {
+      if (books[isbn].author.toLowerCase() === author.toLowerCase()) {
+        booksByAuthor[isbn] = books[isbn];
+      }
+    });
+    resolve(booksByAuthor);
+  });
+};
+
+const getBooksByTitleAsync = (title) => {
+  return new Promise((resolve) => {
+    const booksByTitle = {};
+    Object.keys(books).forEach((isbn) => {
+      if (books[isbn].title.toLowerCase() === title.toLowerCase()) {
+        booksByTitle[isbn] = books[isbn];
+      }
+    });
+    resolve(booksByTitle);
+  });
+};
+
 
 public_users.post("/register", (req,res) => {
   const username = req.body.username;
@@ -79,6 +125,40 @@ public_users.get('/review/:isbn',function (req, res) {
   }
 
   return res.send(book.reviews);
+});
+
+// Task 10: Get all books using async/await + Promise helper
+public_users.get('/async/books', async function (req, res) {
+  try {
+    const allBooks = await getAllBooksAsync();
+    return res.send(JSON.stringify(allBooks, null, 4));
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+});
+
+// Task 11: Get book by ISBN using Promise callbacks
+public_users.get('/async/isbn/:isbn', function (req, res) {
+  getBookByIsbnAsync(req.params.isbn)
+    .then((book) => res.send(book))
+    .catch((error) => res.status(404).json(error));
+});
+
+// Task 12: Get books by author using async/await + Promise helper
+public_users.get('/async/author/:author', async function (req, res) {
+  try {
+    const booksByAuthor = await getBooksByAuthorAsync(req.params.author);
+    return res.send(booksByAuthor);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+});
+
+// Task 13: Get books by title using Promise callbacks
+public_users.get('/async/title/:title', function (req, res) {
+  getBooksByTitleAsync(req.params.title)
+    .then((booksByTitle) => res.send(booksByTitle))
+    .catch((error) => res.status(500).json(error));
 });
 
 module.exports.general = public_users;
