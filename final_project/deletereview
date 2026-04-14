@@ -1,0 +1,11 @@
+﻿curl.exe -i -X DELETE -b cookies.txt http://localhost:5000/customer/auth/review/1
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 59
+ETag: W/"3b-qFIMeI/HYmBOYj+slb2cPsn/iBQ"
+Date: Mon, 13 Apr 2026 23:40:07 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"message":"The book review has been deleted successfully"}
