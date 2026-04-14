@@ -1,4 +1,18 @@
 # Distribution / packaging
 node_modules
 
+# Local submission artifacts (keep locally, do not track)
+final_project/getallbooks
+final_project/getbooksbyISBN
+final_project/getbooksbyauthor
+final_project/getbooksbytitle
+final_project/getbookreview
+final_project/register
+final_project/login
+final_project/reviewadded
+final_project/deletereview
+final_project/githubrepo
+final_project/cookies.txt
+final_project/register.json
+final_project/login.json
 
